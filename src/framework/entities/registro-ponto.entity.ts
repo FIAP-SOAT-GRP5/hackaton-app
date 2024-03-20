@@ -1,4 +1,4 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
 	Column,
 	Entity,
@@ -11,23 +11,28 @@ import { UsuarioEntity } from './usuario.entity';
 @Entity('registro_ponto')
 export class RegistroPontoEntity implements IEntity {
 	@PrimaryGeneratedColumn()
+	@ApiProperty()
 	id: number;
 
 	@Column()
-	@ApiPropertyOptional()
-	dataChegada?: Date;
+	@ApiProperty()
+	data: Date;
 
 	@Column()
 	@ApiPropertyOptional()
-	dataSaidaAlmoco?: Date;
+	horaChegada?: Date;
 
 	@Column()
 	@ApiPropertyOptional()
-	dataChegadaAlmoco?: Date;
+	horaSaidaAlmoco?: Date;
 
 	@Column()
 	@ApiPropertyOptional()
-	dataSaida?: Date;
+	horaChegadaAlmoco?: Date;
+
+	@Column()
+	@ApiPropertyOptional()
+	horaSaida?: Date;
 
 	@ManyToOne(() => UsuarioEntity, (item) => item.registroPontos)
 	usuario: UsuarioEntity;

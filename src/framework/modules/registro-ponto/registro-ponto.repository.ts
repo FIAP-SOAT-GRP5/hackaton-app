@@ -2,9 +2,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { IRegistroPontoRepository } from '../../../domain/application/interfaces/order/registro-ponto-repository.interface';
+import { IRegistroPontoRepository } from '../../../domain/application/interfaces/registro-ponto/registro-ponto-repository.interface';
 import { RegistroPonto } from '../../../domain/enterprise/entities/registro-ponto.entity';
 import { RegistroPontoEntity } from '../../entities/registro-ponto.entity';
+import { CurrentUser } from '../../model/current-user.model';
 
 @Injectable()
 export class RegistroPontoRepository implements IRegistroPontoRepository {
@@ -13,13 +14,16 @@ export class RegistroPontoRepository implements IRegistroPontoRepository {
 		private readonly registroPontoRepository: Repository<RegistroPontoEntity>
 	) {}
 
-	findById(id: number): Promise<RegistroPonto> {
-		return this.registroPontoRepository.findOne({
-			where: {
-				id,
-			},
-			relations: ['usuario'],
-		});
+	salvar(registroPonto: RegistroPonto): Promise<RegistroPonto> {
+		return this.registroPontoRepository.save(registroPonto);
+	}
+
+	buscarPorData(usuario: CurrentUser, data: Date): Promise<RegistroPonto | undefined> {
+		const query = this.registroPontoRepository.createQueryBuilder('registroPonto')
+		query.innerJoinAndSelect('registroPonto.usuario', 'usuario')
+		query.where('usuario.id = :id', { id: usuario.id })
+		query.andWhere('DATE(registroPonto.data) = DATE(:data)', { data })
+		return query.getOne();
 	}
 
 }

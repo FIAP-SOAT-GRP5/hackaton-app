@@ -1,3 +1,3 @@
 export class CurrentUser {
-	id: string;
+	id: number;
 }
