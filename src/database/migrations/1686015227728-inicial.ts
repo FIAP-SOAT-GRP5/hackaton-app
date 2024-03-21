@@ -32,7 +32,7 @@ export class Initial1686015227728 implements MigrationInterface {
 					},
 				],
 			}),
-			true,
+			true
 		);
 
 		await queryRunner.createTable(
@@ -71,6 +71,16 @@ export class Initial1686015227728 implements MigrationInterface {
 						type: 'time',
 						isNullable: true,
 					},
+					{
+						name: 'created_at',
+						type: 'timestamp',
+						default: 'now()',
+					},
+					{
+						name: 'updated_at',
+						type: 'timestamp',
+						default: 'now()',
+					},
 				],
 				foreignKeys: [
 					{
@@ -83,7 +93,7 @@ export class Initial1686015227728 implements MigrationInterface {
 					},
 				],
 			}),
-			true,
+			true
 		);
 	}
 
