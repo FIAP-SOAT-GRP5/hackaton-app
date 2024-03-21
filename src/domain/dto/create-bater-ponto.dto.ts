@@ -1,8 +1,10 @@
 export class CreateBaterPontoDTO {
 	usuario_id: number;
 
-	dataChegada?: Date;
-	dataSaidaAlmoco?: Date;
-	dataChegadaAlmoco?: Date;
-	dataSaida?: Date;
+	data: Date;
+
+	horaChegada?: Date;
+	horaSaidaAlmoco?: Date;
+	horaChegadaAlmoco?: Date;
+	horaSaida?: Date;
 }

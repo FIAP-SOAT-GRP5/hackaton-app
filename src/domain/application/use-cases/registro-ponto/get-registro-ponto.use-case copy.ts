@@ -5,6 +5,13 @@ import { IRegistroPontoRepository } from '../../interfaces/registro-ponto/regist
 export class GetRegistroPontoUseCase implements IGetRegistroPontoUseCase {
 	constructor(private readonly repository: IRegistroPontoRepository) {}
 
+	buscarRegistroPontoPorUsuario(
+		idUsuario: number,
+		data?: Date
+	): Promise<RegistroPonto[]> {
+		return this.repository.buscarRegistroPontoPorUsuario(idUsuario, data);
+	}
+
 	findById(id: number): Promise<RegistroPonto> {
 		return this.repository.findById(id);
 	}

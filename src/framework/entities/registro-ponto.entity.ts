@@ -1,9 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
 	Column,
+	CreateDateColumn,
 	Entity,
+	JoinColumn,
 	ManyToOne,
-	PrimaryGeneratedColumn
+	PrimaryGeneratedColumn,
+	UpdateDateColumn,
 } from 'typeorm';
 import { IEntity } from '../../domain/application/interfaces/entity.interface';
 import { UsuarioEntity } from './usuario.entity';
@@ -34,8 +37,19 @@ export class RegistroPontoEntity implements IEntity {
 	@ApiPropertyOptional()
 	horaSaida?: Date;
 
+	@Column({ name: 'usuario_id' })
+	@ApiProperty()
+	usuario_id: number;
+
 	@ManyToOne(() => UsuarioEntity, (item) => item.registroPontos)
+	@JoinColumn({ name: 'usuario_id' })
 	usuario: UsuarioEntity;
+
+	@CreateDateColumn()
+	createdAt: Date;
+
+	@UpdateDateColumn()
+	updatedAt: Date;
 
 	getId(): number {
 		return this.id;

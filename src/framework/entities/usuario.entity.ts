@@ -1,10 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import {
-	Column,
-	Entity,
-	OneToMany,
-	PrimaryGeneratedColumn
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { IEntity } from '../../domain/application/interfaces/entity.interface';
 import { RegistroPontoEntity } from './registro-ponto.entity';
 

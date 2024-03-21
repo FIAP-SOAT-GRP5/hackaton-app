@@ -1,6 +1,8 @@
 import {
 	Controller,
 	Get,
+	HttpException,
+	HttpStatus,
 	Inject,
 	Param,
 	ParseIntPipe,
@@ -49,18 +51,28 @@ export class RegistroPontoController {
 		}
 	}
 
-	@Get(':id')
-	public async findById(
+	@Get('/relatorio-por-usuario/:id')
+	@AuthJwt()
+	public async relatorioPorUsuario(
 		@Res() res: Response,
-		@Param('id', ParseIntPipe) id: number
+		@Param('id', ParseIntPipe) id: number,
+		@ReqCurrentUser() usuarioLogado: CurrentUser
 	): Promise<void> {
 		try {
-			const registro = await this.getRegistroPontoUseCase.findById(id);
+			if (usuarioLogado.id != id) {
+				throw new HttpException(
+					'Usuário não tem permissão para acessar este recurso',
+					HttpStatus.FORBIDDEN
+				);
+			}
+
+			const registro =
+				await this.getRegistroPontoUseCase.buscarRegistroPontoPorUsuario(id);
 
 			if (!registro) {
-				res.status(404).send('Ponto not found');
+				res.status(200).send({ registro: [] });
 			} else {
-				res.status(200).send({ registro: registro });
+				res.status(200).send(registro);
 			}
 		} catch (error) {
 			res.status(500).send(error.message);
