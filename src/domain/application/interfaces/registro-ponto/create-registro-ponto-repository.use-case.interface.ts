@@ -2,7 +2,7 @@
 
 import { RegistroPonto } from '../../../enterprise/entities/registro-ponto.entity';
 
-export interface ICreateRegistroPontoUseCase {
+export interface ICriarRegistroPontoUseCase {
 	registrarPonto(idUsuario: number): Promise<RegistroPonto>;
 }
 /* v8 ignore stop */

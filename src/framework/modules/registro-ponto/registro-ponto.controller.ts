@@ -13,7 +13,7 @@ import { ApiTags } from '@nestjs/swagger';
 
 import { Response } from 'express';
 
-import { ICreateRegistroPontoUseCase } from '@/domain/application/interfaces/registro-ponto/create-registro-ponto-repository.use-case.interface';
+import { ICriarRegistroPontoUseCase } from '@/domain/application/interfaces/registro-ponto/create-registro-ponto-repository.use-case.interface';
 import { IGetRegistroPontoUseCase } from '@/domain/application/interfaces/registro-ponto/get-registro-ponto-repository.use-case.interface';
 import {
 	CREATE_REGISTRO_PONTO_USE_CASE,
@@ -31,7 +31,7 @@ export class RegistroPontoController {
 		@Inject(GET_REGISTRO_PONTO_USE_CASE)
 		private readonly getRegistroPontoUseCase: IGetRegistroPontoUseCase,
 		@Inject(CREATE_REGISTRO_PONTO_USE_CASE)
-		private readonly createIRegistroPontoUseCase: ICreateRegistroPontoUseCase
+		private readonly createIRegistroPontoUseCase: ICriarRegistroPontoUseCase
 	) {}
 
 	@Post()

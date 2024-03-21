@@ -5,7 +5,7 @@ import { CurrentUser } from '../../../../framework/model/current-user.model';
 export interface IRegistroPontoRepository {
 	salvar(registroPonto: RegistroPonto): Promise<RegistroPonto>;
 	buscarPorData(usuario: CurrentUser, data: Date): Promise<RegistroPonto | undefined>;
-	findById(id: number): Promise<RegistroPonto>;
+	buscarPorId(id: number): Promise<RegistroPonto>;
 	buscarRegistroPontoPorUsuario(
 		idUsuario: number,
 		data?: Date

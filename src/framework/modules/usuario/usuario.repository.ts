@@ -13,7 +13,7 @@ export class UsuarioRepository implements IUsuarioRepository {
 		private readonly usuarioRepository: Repository<UsuarioEntity>
 	) {}
 
-	findById(id: number): Promise<Usuario> {
+	buscarPorId(id: number): Promise<Usuario> {
 		return this.usuarioRepository.findOne({
 			where: {
 				id,

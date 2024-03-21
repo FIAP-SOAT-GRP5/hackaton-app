@@ -13,6 +13,6 @@ export class GetRegistroPontoUseCase implements IGetRegistroPontoUseCase {
 	}
 
 	findById(id: number): Promise<RegistroPonto> {
-		return this.repository.findById(id);
+		return this.repository.buscarPorId(id);
 	}
 }

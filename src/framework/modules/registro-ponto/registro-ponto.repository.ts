@@ -28,7 +28,7 @@ export class RegistroPontoRepository implements IRegistroPontoRepository {
 		return query.getOne();
 	}
 
-	findById(id: number): Promise<RegistroPonto> {
+	buscarPorId(id: number): Promise<RegistroPonto> {
 		return this.registroPontoRepository.findOne({
 			where: {
 				id,
