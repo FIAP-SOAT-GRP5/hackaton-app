@@ -1,14 +1,18 @@
 /* v8 ignore start */
+import { RelatorioPontoDto } from '@/domain/dto/relatorio-ponto.dto';
 import { RegistroPonto } from '@/domain/enterprise/entities/registro-ponto.entity';
-import { CurrentUser } from '../../../../framework/model/current-user.model';
+import { UsuarioLogado } from '../../../../framework/model/current-user.model';
 
 export interface IRegistroPontoRepository {
 	salvar(registroPonto: RegistroPonto): Promise<RegistroPonto>;
-	buscarPorData(usuario: CurrentUser, data: Date): Promise<RegistroPonto | undefined>;
+	buscarPorData(
+		usuario: UsuarioLogado,
+		data: Date
+	): Promise<RegistroPonto | undefined>;
 	buscarPorId(id: number): Promise<RegistroPonto>;
 	buscarRegistroPontoPorUsuario(
-		idUsuario: number,
+		usuario: UsuarioLogado,
 		data?: Date
-	): Promise<RegistroPonto[]>;
+	): Promise<RelatorioPontoDto[]>;
 }
 /* v8 ignore stop */

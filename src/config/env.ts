@@ -19,6 +19,8 @@ const envSchema = z.object({
 
 	JWT_KEY: z.string(),
 
+	EMAIL_USER: z.string(),
+	EMAIL_PASS: z.string(),
 });
 
 const envTestSchema = z.object({
@@ -35,6 +37,8 @@ const envTestSchema = z.object({
 
 	JWT_KEY: z.string().default('test'),
 
+	EMAIL_USER: z.string(),
+	EMAIL_PASS: z.string(),
 });
 
 const getEnv = () => {
