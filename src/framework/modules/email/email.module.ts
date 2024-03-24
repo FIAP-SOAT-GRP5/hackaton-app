@@ -1,9 +1,8 @@
-import { Module } from '@nestjs/common';
-
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+import { Module } from '@nestjs/common';
 import { env } from 'process';
-import { EmailRepository } from './email.respository';
+import { EmailRepository } from './email.gateway';
 
 @Module({
 	imports: [
@@ -28,7 +27,6 @@ import { EmailRepository } from './email.respository';
 			},
 		}),
 	],
-	controllers: [],
 	providers: [EmailRepository],
 	exports: [EmailRepository],
 })
