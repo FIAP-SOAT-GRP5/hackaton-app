@@ -1,35 +1,31 @@
 import {
 	Controller,
 	Get,
-	HttpException,
-	HttpStatus,
 	Inject,
-	Param,
-	ParseIntPipe,
 	Post,
-	Res,
+	Res
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 
 import { Response } from 'express';
 
-import { ICriarRegistroPontoUseCase } from '@/domain/application/interfaces/registro-ponto/create-registro-ponto-repository.use-case.interface';
-import { IGetRegistroPontoUseCase } from '@/domain/application/interfaces/registro-ponto/get-registro-ponto-repository.use-case.interface';
+import { IEnviarRegistroPontoUseCase } from '@/domain/application/interfaces/registro-ponto/enviar-registro-ponto.use-case.interface';
 import {
 	CREATE_REGISTRO_PONTO_USE_CASE,
-	GET_REGISTRO_PONTO_USE_CASE,
+	ENVIAR_REGISTRO_PONTO_USE_CASE,
 } from '@/domain/application/symbols/registro-ponto.symbols';
 
 import { ReqCurrentUser } from '@/framework/decorators/current-user.decorator';
 import { UsuarioLogado } from '@/framework/model/current-user.model';
+import { ICriarRegistroPontoUseCase } from '../../../domain/application/interfaces/registro-ponto/criar-registro-ponto.use-case.interface';
 import { AuthJwt } from '../../decorators/auth-jwt.decorator';
 
 @ApiTags('Registro de Ponto')
 @Controller('registro-ponto')
 export class RegistroPontoController {
 	constructor(
-		@Inject(GET_REGISTRO_PONTO_USE_CASE)
-		private readonly getRegistroPontoUseCase: IGetRegistroPontoUseCase,
+		@Inject(ENVIAR_REGISTRO_PONTO_USE_CASE)
+		private readonly getRegistroPontoUseCase: IEnviarRegistroPontoUseCase,
 		@Inject(CREATE_REGISTRO_PONTO_USE_CASE)
 		private readonly createIRegistroPontoUseCase: ICriarRegistroPontoUseCase
 	) {}
@@ -41,8 +37,8 @@ export class RegistroPontoController {
 		@ReqCurrentUser() usuarioLogado: UsuarioLogado
 	): Promise<void> {
 		try {
-			const createdPonto = await this.createIRegistroPontoUseCase.registrarPonto(
-				usuarioLogado.id
+			const createdPonto = await this.createIRegistroPontoUseCase.registrar(
+				usuarioLogado
 			);
 
 			res.status(201).send(createdPonto);
@@ -51,23 +47,15 @@ export class RegistroPontoController {
 		}
 	}
 
-	@Get('/relatorio-por-usuario/:id')
+	@Get('/relatorio')
 	@AuthJwt()
 	public async relatorioPorUsuario(
 		@Res() res: Response,
-		@Param('id', ParseIntPipe) id: number,
 		@ReqCurrentUser() usuarioLogado: UsuarioLogado
 	): Promise<void> {
 		try {
-			if (usuarioLogado.id != id) {
-				throw new HttpException(
-					'Usuário não tem permissão para acessar este recurso',
-					HttpStatus.FORBIDDEN
-				);
-			}
-
 			const registro =
-				await this.getRegistroPontoUseCase.buscarRegistroPontoPorUsuario(
+				await this.getRegistroPontoUseCase.enviarRegistroPontoPorUsuario(
 					usuarioLogado
 				);
 

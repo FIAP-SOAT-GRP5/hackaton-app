@@ -4,9 +4,10 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 
 import { DateTime } from 'luxon';
+import { IEnviarRelRegistroPontoEmailGateway } from '../../../domain/application/interfaces/registro-ponto/enviar-rel-registro-ponto-email.gateway.interface';
 
 @Injectable()
-export class EmailRepository {
+export class EmailRepository implements IEnviarRelRegistroPontoEmailGateway {
 	constructor(private mailerService: MailerService) {}
 
 	async envioRelatorioPonto(

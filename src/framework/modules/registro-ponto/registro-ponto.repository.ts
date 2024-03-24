@@ -7,9 +7,8 @@ import { RegistroPonto } from '../../../domain/enterprise/entities/registro-pont
 import { RegistroPontoEntity } from '../../entities/registro-ponto.entity';
 
 import { IRegistroPontoRepository } from '@/domain/application/interfaces/registro-ponto/registro-ponto-repository.interface';
-import { RelatorioPontoDto } from '@/domain/dto/relatorio-ponto.dto';
+import { RelatorioPontoRelDto } from '../../../domain/dto/registro-ponto-rel.dto';
 import { UsuarioLogado } from '../../model/current-user.model';
-import { EmailRepository } from '../email/email.respository';
 
 @Injectable()
 export class RegistroPontoRepository implements IRegistroPontoRepository {
@@ -17,7 +16,7 @@ export class RegistroPontoRepository implements IRegistroPontoRepository {
 		@InjectRepository(RegistroPontoEntity)
 		private readonly registroPontoRepository: Repository<RegistroPontoEntity>,
 
-		private readonly emailRepository: EmailRepository
+
 	) {}
 
 	salvar(registroPonto: RegistroPonto): Promise<RegistroPonto> {
@@ -46,34 +45,22 @@ export class RegistroPontoRepository implements IRegistroPontoRepository {
 
 	async buscarRegistroPontoPorUsuario(
 		usuario: UsuarioLogado
-	): Promise<RelatorioPontoDto[]> {
+	): Promise<RelatorioPontoRelDto[]> {
 		const registros = await this.registroPontoRepository
 			.createQueryBuilder('registro_ponto')
 			.select([
-				'registro_ponto.id',
-				'registro_ponto.data',
-				'registro_ponto.horaChegada',
-				'registro_ponto.horaSaidaAlmoco',
-				'registro_ponto.horaChegadaAlmoco',
-				'registro_ponto.horaSaida',
+				'registro_ponto.id AS id',
+				'registro_ponto.data AS data',
+				'registro_ponto.horaChegada AS horaChegada',
+				'registro_ponto.horaSaidaAlmoco AS horaSaidaAlmoco',
+				'registro_ponto.horaChegadaAlmoco AS horaChegadaAlmoco',
+				'registro_ponto.horaSaida AS horaSaida',
 				'(TIME_TO_SEC(TIMEDIFF(registro_ponto.horaSaida, registro_ponto.horaChegada)) / 3600) AS horasTrabalhadas',
 				'(TIME_TO_SEC(TIMEDIFF(registro_ponto.horaChegadaAlmoco, registro_ponto.horaSaidaAlmoco)) / 3600) AS horasDeAlmoco',
 			])
 			.where('registro_ponto.usuario_id = :idUsuario', { idUsuario: usuario.id })
-			.getRawMany();
+			.getRawMany<RelatorioPontoRelDto>();
 
-		const relatorioPonto = registros.map((item) => ({
-			data: item.registro_ponto_data,
-			horaChegada: item.registro_ponto_hora_chegada,
-			horaSaidaAlmoco: item.registro_ponto_hora_saida_almoco,
-			horaChegadaAlmoco: item.registro_ponto_hora_chegada_almoco,
-			horaSaida: item.registro_ponto_hora_saida,
-			horasTrabalhadas:
-				parseFloat(item.horasTrabalhadas) - parseFloat(item.horasDeAlmoco),
-		}));
-
-		this.emailRepository.envioRelatorioPonto(usuario, relatorioPonto);
-
-		return relatorioPonto;
+		return registros;
 	}
 }
