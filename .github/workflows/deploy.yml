@@ -2,8 +2,8 @@ name: Deploy to ECR
 
 on:
  pull_request:
-	branches:
-	 - main
+  branches: 
+   - main
 
 jobs:
  deploy:
