@@ -1,11 +1,11 @@
 /* v8 ignore start */
 
 import { RelatorioPontoDto } from '@/domain/dto/relatorio-ponto.dto';
-import { UsuarioLogado } from '@/framework/model/current-user.model';
+import { Usuario } from '../../../enterprise/entities/usuario.entity';
 
 export interface IEnviarRelRegistroPontoEmailGateway {
 	envioRelatorioPonto(
-		usuario: UsuarioLogado,
+		usuario: Usuario,
 		registros: RelatorioPontoDto[]
 	): Promise<void>;
 }

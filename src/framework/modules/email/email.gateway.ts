@@ -1,17 +1,17 @@
 import { RelatorioPontoDto } from '@/domain/dto/relatorio-ponto.dto';
-import { UsuarioLogado } from '@/framework/model/current-user.model';
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 
 import { DateTime } from 'luxon';
 import { IEnviarRelRegistroPontoEmailGateway } from '../../../domain/application/interfaces/registro-ponto/enviar-rel-registro-ponto-email.gateway.interface';
+import { Usuario } from '../../../domain/enterprise/entities/usuario.entity';
 
 @Injectable()
 export class EmailRepository implements IEnviarRelRegistroPontoEmailGateway {
 	constructor(private mailerService: MailerService) {}
 
 	async envioRelatorioPonto(
-		usuario: UsuarioLogado,
+		usuario: Usuario,
 		registros: RelatorioPontoDto[]
 	) {
 		const tableContent = registros

@@ -58,7 +58,8 @@ export class RegistroPontoRepository implements IRegistroPontoRepository {
 				'(TIME_TO_SEC(TIMEDIFF(registro_ponto.horaSaida, registro_ponto.horaChegada)) / 3600) AS horasTrabalhadas',
 				'(TIME_TO_SEC(TIMEDIFF(registro_ponto.horaChegadaAlmoco, registro_ponto.horaSaidaAlmoco)) / 3600) AS horasDeAlmoco',
 			])
-			.where('registro_ponto.usuario_id = :idUsuario', { idUsuario: usuario.id })
+			.where('registro_ponto.usuario_id = :id', { id: usuario.id })
+			.andWhere('MONTH(registro_ponto.data) = MONTH(CURRENT_DATE()) - 1')
 			.getRawMany<RelatorioPontoRelDto>();
 
 		return registros;
