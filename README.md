@@ -1,6 +1,6 @@
-# MS Order
+# Hackaton App
 
-Este repositório contém um microserviço para gerenciar pedidos em um restaurante/lanchonete. A API permite cadastrar produtos e realizar pedidos, além de consultar os pedidos em andamento e seus respectivos status. A API é documentada usando o Swagger, que fornece uma interface intuitiva para testar e explorar os endpoints.
+Este repositório contém uma aplicação MVC de um sistema de registro de ponto eletrônico da Hackaton Company SA. A API permite autenticar usuários com login e senha, registrar os pontos nos horários de entrada, saída e retorno do almoço e saída. Também emite um relatório mensal com o espelho de ponto dos registros do mês.
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=FIAP-SOAT-GRP5_ms-order&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=FIAP-SOAT-GRP5_ms-order)
 
@@ -16,13 +16,13 @@ Siga as instruções abaixo para obter uma cópia do projeto localmente e execut
 1. Faça o download do repositório do projeto:
 
 ```shell
-git clone https://github.com/FIAP-SOAT-GRP5/ms-order.git
+git clone [https://github.com/FIAP-SOAT-GRP5/ms-order.git](https://github.com/FIAP-SOAT-GRP5/hackaton-app.git)
 ```
 
 2. Instale as dependências necessárias, se necessário:
 
 ```shell
-cd lunch-api
+cd hackaton-app
 npm install
 ```
 
@@ -42,205 +42,46 @@ DB_USERNAME=""
 DB_PASSWORD=""
 DB_DATABASE="app"
 
-MP_ACCESS_TOKEN=""
-
 JWT_KEY=""
 
-QUEUE_CREATE_ORDER_URL=""
-QUEUE_UPDATE_ORDER_URL=""
-
-AWS_ACCESS_KEY_ID=""
-AWS_SECRET_ACCESS_KEY=""
-AWS_REGION=""
+EMAIL_USER="email@gmail.com"
+EMAIL_PASS=""
 ```
 
 ## Documentação das rotas
 
-### Categorias
+### Usuario(s)
 
-A tabela "category" já foi previamente preenchida com as seguintes informações:
+A tabela "usuario" já foi previamente preenchida na migration
 
-| ID  | NAME           |
-| --- | -------------- |
-| 1   | Lanche         |
-| 2   | Acompanhamento |
-| 3   | Bebida         |
-| 4   | Sobremesa      |
+Esses usuários foram inseriodos para permitir sua autenticação para acessar funções restritas do sitema, como registro de ponto. 
 
-Essas categorias foram inseridas para classificar os produtos de acordo com suas respectivas categorias, permitindo uma organização adequada dos itens do cardápio.
+#### Autenticar
 
-### Produto(s)
+Para autenticar um usuário, utilize o endpoint `/autenticacao` com o método POST.
 
-#### Consultar
+Endpoint: `POST /autenticacao`
 
-Para consultar um produto, existem rotas disponíveis para busca por categorias e por ID do produto.
-
-- Por ID do Produto: `GET /item/{id}`
-- Buscar todos os Produtos: `GET /item`
-- Buscar Lanche(s): `GET /item/getItemBySnack`
-- Buscar Acompanhamento(s): `GET /item/getItemByFollowUp`
-- Buscar Bebida(s): `GET /item/getItemByDrink`
-- Buscar sobremesa(s): `GET /item/getItemByDessert`
-
-Substitua `{id}` pelo ID real do produto ao consultar por ID do Produto.
-
-#### Cadastrar
-
-Para cadastrar um produto, utilize o endpoint `/item` com o método POST.
-
-Endpoint: `POST /item`
-
-Exemplo de dados para cadastrar um produto:
+Exemplo de dados para autenticar um usuario:
 
 ```json
 {
-	"name": "Coca-Cola",
-	"price": 7,
-	"description": "Refrigerante de 2L",
-	"category_id": 3
+	"matricula": "0000001",
+	"senha": "Mudar.123
 }
 ```
+Utilize o token enviado nesta rota no header da requisição para utilizar as demais rotas.
 
-#### Atualizar
+### Registro Ponto(s)
 
-Para atualizar um produto, utilize o endpoint `/item/{id}` com o método PUT.
+A tabela "registro_ponto" contém as informações de data e horário de entrada, saída para almoço, retorno do almoço e saída de todos os usuários. O token do header é utilizado para identificar o usuário e registrar os horários trabalhados do dia.
 
-Endpoint: `PUT /item/{id}`
+#### Registrar Ponto
 
-Exemplo de dados para atualizar um produto:
+Para registrar o ponto, inserir o token recebido na rota de autenticação no header desta requisição e utilize o endpoint `/registro-ponto` com o método POST.
 
-```json
-{
-	"name": "Coca-Cola",
-	"price": 7,
-	"description": "Refrigerante de 2L",
-	"category_id": 3
-}
-```
+#### Relatório por usuário
 
-### Pedido(s)
+Para gerar o espelho de registro de pontos mensal do usuário, inserir o token recebido na rota de autenticação no header desta requisição e utilize o endpoint `/registro-ponto//relatorio-por-usuario/:{id}` com o método GET.
 
-#### Cadastrar
-
-##### - Por menssageria
-
-O registro de pedidos por meio de mensageria deve ser realizado pelo microserviço de produção (production), utilizando a fila `create_order_production`. Para o microserviço de pagamento, o cadastro deve ser efetuado por meio da fila `create_order_payment`.
-
-Cada pedido deve conter os seguintes campos:
-
-- `status`: string
-- `id`: number (ID do produto)
-
-Exemplo de como preencher os valores para cadastro:
-
-```json
-{
-	"status": "awaiting_payment",
-	"id": 7
-}
-```
-
-Esse processo implica em enviar uma mensagem para a fila `create_order` com as informações necessárias do pedido, garantindo que o microserviço de produção receba e processe a requisição corretamente. Certifique-se de incluir esses campos ao enviar dados para a fila, para que o sistema possa interpretar e processar a informação adequadamente.
-
-##### Via Swagger
-
-Para cadastrar o(s) pedido(s) no Swagger, utilize o endpoint `/order` utilize o endpoint POST.
-
-Cada pedido deve conter os seguintes campos:
-
-- `itemsIds`: array (Lista de produtos)
-- `id`: number (id do produto)
-- `quantity`: number (quantidade do produto)
-
-Endpoint:`POST /order`
-
-Exemplo de valor para cadastrar um pedido:
-
-```json
-{
-	"itemsIds": [
-		{
-			"id": 0,
-			"quantity": 0
-		}
-	]
-}
-```
-
-#### Atualização
-
-##### - Por menssageria
-
-A atualização do pedido por meio de mensageria, utilizando o microserviço de produção (production), deve ser feito pela fila `update_order`.
-
-Cada pedido deve conter os seguintes campos:
-
-- `status`: string
-- `id`: number (ID do produto)
-
-Exemplo de como preencher os valores para atualização:
-
-```json
-{
-	"status": "awaiting_payment",
-	"id": 7
-}
-```
-
-Esse processo implica em enviar uma mensagem para a fila `update_order` com as informações necessárias do pedido, garantindo que o microserviço de produção receba e processe a requisição corretamente. Certifique-se de incluir esses campos ao enviar dados para a fila, para que o sistema possa interpretar e processar a informação adequadamente.
-
-#### Consultar
-
-Para realizar consultas após o cadastro de um pedido, existem rotas disponíveis para busca por todos os pedidos e seus respectivos status, bem como por ID do pedido.
-
-Por ID do pedido
-
-Endpoint: `GET /order/{id}`
-
-Lembre-se de substituir `{id}` pelo ID real do pedido.
-
-Buscar todos os pedidos
-
-Endpoint: `GET /order/list-all-orders`
-
-# Fluxo de Pedidos em Restaurante/Lanchonete
-
-Este é um guia passo a passo para criar um fluxo de pedidos em um restaurante/lanchonete utilizando a API disponibilizada. Siga os seguintes passos na ordem indicada: cadastrar produto(s), cadastrar cliente(s) e cadastrar pedido(s).
-
-## Cadastrar produto(s)
-
-Para cadastrar um produto, faça uma requisição POST para o endpoint `/item`.
-
-Exemplo de como preencher os valores para cadastrar um produto:
-
-```json
-{
-	"name": "Coca-Cola",
-	"price": 7,
-	"description": "Refrigerante de 2L",
-	"category_id": 3
-}
-```
-
-## Cadastrar pedido(s)
-
-Para cadastrar um pedido, faça uma requisição POST para o endpoint `/order`.
-
-Exemplo de como preencher os valores para cadastrar um pedido:
-
-```json
-{
-	"itemsIds": [
-		{
-			"id": 1,
-			"quantity": 2
-		}
-	]
-}
-```
-
-## Consultar pedido(s) e status
-
-Para consultar os pedidos em andamento e seus respectivos status, faça uma requisição GET para o endpoint `/list-all-orders`.
-
-Essas rotas permitem que você cadastre produtos, clientes e pedidos, além de consultar os pedidos e seus respectivos status.
+Lembre-se de substituir {id} pelo ID real do pedido.
