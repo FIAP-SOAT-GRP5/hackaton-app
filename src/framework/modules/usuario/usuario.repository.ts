@@ -21,5 +21,13 @@ export class UsuarioRepository implements IUsuarioRepository {
 		});
 	}
 
+	buscarPorMatricula(matricula: string): Promise<Usuario> {
+		return this.usuarioRepository.findOne({
+			where: {
+				matricula,
+			}
+		})
+	}
+
 }
 /* v8 ignore stop */
