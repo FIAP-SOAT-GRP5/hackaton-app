@@ -54,16 +54,12 @@ export class RegistroPontoController {
 		@ReqCurrentUser() usuarioLogado: UsuarioLogado
 	): Promise<void> {
 		try {
-			const registro =
+			const registros =
 				await this.getRegistroPontoUseCase.enviarRegistroPontoPorUsuario(
 					usuarioLogado
 				);
 
-			if (!registro) {
-				res.status(200).send({ registro: [] });
-			} else {
-				res.status(200).send(registro);
-			}
+			res.status(200).send({ registros });
 		} catch (error) {
 			res.status(500).send(error.message);
 		}
