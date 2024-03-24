@@ -1,6 +1,7 @@
 import { UsuarioAutenticadoDTO } from '@/domain/dto/usuario-autenticado.dto';
-import { UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { compare } from 'bcrypt';
 import { IAutenticarUsuarioUseCase } from '../../interfaces/autenticacao/autenticar-usuario.use-case.interface';
 import { IUsuarioRepository } from '../../interfaces/usuario/usuario-repository.interface';
 
@@ -14,8 +15,12 @@ export class AutenticarUsuarioUseCase implements IAutenticarUsuarioUseCase {
 		palavraPasse: string
 	): Promise<UsuarioAutenticadoDTO> {
 		const usuario = await this.usuarioRepository.buscarPorMatricula(matricula);
-		if(usuario?.senha !== palavraPasse) {
-			throw new UnauthorizedException();
+		if(!usuario) {
+			throw new NotFoundException("Matrícula ou senha inválidos.")
+		}
+		const senhaValida = await compare(palavraPasse, usuario?.senha)
+		if(!senhaValida) {
+			throw new UnauthorizedException("Matrícula ou senha inválidos.");
 		}
 		const payload = {
 			sub: usuario.id, username: usuario.nome
