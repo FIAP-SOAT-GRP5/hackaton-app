@@ -7,4 +7,6 @@ export class BaterPontoDTO {
 	dataSaidaAlmoco?: Date;
 	dataChegadaAlmoco?: Date;
 	dataSaida?: Date;
+
+	horasTrabalhadas: number;
 }
