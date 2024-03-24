@@ -1,12 +1,14 @@
 /* v8 ignore start */
 
+import { RelatorioPontoDto } from '@/domain/dto/relatorio-ponto.dto';
+import { UsuarioLogado } from '@/framework/model/current-user.model';
 import { RegistroPonto } from '../../../enterprise/entities/registro-ponto.entity';
 
 export interface IGetRegistroPontoUseCase {
 	findById(id: number): Promise<RegistroPonto>;
 	buscarRegistroPontoPorUsuario(
-		idUsuario: number,
+		usuario: UsuarioLogado,
 		data?: Date
-	): Promise<RegistroPonto[]>;
+	): Promise<RelatorioPontoDto[]>;
 }
 /* v8 ignore stop */

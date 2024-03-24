@@ -21,7 +21,7 @@ import {
 } from '@/domain/application/symbols/registro-ponto.symbols';
 
 import { ReqCurrentUser } from '@/framework/decorators/current-user.decorator';
-import { CurrentUser } from '@/framework/model/current-user.model';
+import { UsuarioLogado } from '@/framework/model/current-user.model';
 import { AuthJwt } from '../../decorators/auth-jwt.decorator';
 
 @ApiTags('Registro de Ponto')
@@ -38,7 +38,7 @@ export class RegistroPontoController {
 	@AuthJwt()
 	public async registrarPonto(
 		@Res() res: Response,
-		@ReqCurrentUser() usuarioLogado: CurrentUser
+		@ReqCurrentUser() usuarioLogado: UsuarioLogado
 	): Promise<void> {
 		try {
 			const createdPonto = await this.createIRegistroPontoUseCase.registrarPonto(
@@ -56,7 +56,7 @@ export class RegistroPontoController {
 	public async relatorioPorUsuario(
 		@Res() res: Response,
 		@Param('id', ParseIntPipe) id: number,
-		@ReqCurrentUser() usuarioLogado: CurrentUser
+		@ReqCurrentUser() usuarioLogado: UsuarioLogado
 	): Promise<void> {
 		try {
 			if (usuarioLogado.id != id) {
@@ -67,7 +67,9 @@ export class RegistroPontoController {
 			}
 
 			const registro =
-				await this.getRegistroPontoUseCase.buscarRegistroPontoPorUsuario(id);
+				await this.getRegistroPontoUseCase.buscarRegistroPontoPorUsuario(
+					usuarioLogado
+				);
 
 			if (!registro) {
 				res.status(200).send({ registro: [] });

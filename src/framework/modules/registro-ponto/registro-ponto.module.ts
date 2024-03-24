@@ -13,9 +13,13 @@ import { RegistroPontoEntity } from '../../entities/registro-ponto.entity';
 import { RegistroPontoController } from './registro-ponto.controller';
 import { RegistroPontoRepository } from './registro-ponto.repository';
 
+import { EmailModule } from '../email/email.module';
+import { EmailRepository } from '../email/email.respository';
+
 @Module({
-	imports: [TypeOrmModule.forFeature([RegistroPontoEntity])],
+	imports: [TypeOrmModule.forFeature([RegistroPontoEntity]), EmailModule],
 	providers: [
+		EmailRepository,
 		RegistroPontoRepository,
 		{
 			provide: CREATE_REGISTRO_PONTO_USE_CASE,
